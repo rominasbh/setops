@@ -45,22 +45,26 @@ def process_file_lines(file, accumulator):
 #Recursively process each word in the line, preprocess, and accumulate the results.
 def process_line(line, accumulator):
     """
-    Processes a single line to extract words, preprocess them, and accumulate the results.
+    Recursively processes a single line to extract words, preprocess them, and accumulate the results.
+    This function handles spaces and punctuation effectively.
     :param line: A string representing a single line from the file.
     :param accumulator: Accumulator for collecting processed words from the line.
     :return: List of processed words from the line.
-    """  
-    # Base case: line is empty
+    """
+     # Base case: If the line is empty, return the accumulator
     if not line:
         return accumulator
-    else:
 
-        first, sep, remainder = (line.partition(' ') if ' ' in line else (line, '', ''))
-        # Preprocess the first word and recurse on the remainder of the line
-        processed_word = preprocess_word(first)
-        return process_line(remainder, accumulator + [processed_word] if processed_word else accumulator)
+    # Find the first word boundary (space or punctuation)
+    word, _, remainder = re.match(r"(\w*)(\W*)(.*)", line).groups()
 
+    # Preprocess the word (if not empty) and add to accumulator
+    if word:
+        processed_word = preprocess_word(word)
+        accumulator.append(processed_word)
 
+    # Recursively process the remainder of the line
+    return process_line(remainder, accumulator)
 # Recursive function to remove punctuation and convert to lowercase
 def preprocess_word(word):
     """
@@ -68,7 +72,8 @@ def preprocess_word(word):
     :param word: The word to preprocess.
     :return: The preprocessed word.
     """
-    return to_lowercase(remove_punctuation(word))
+    word = remove_punctuation(word)
+    return to_lowercase(word)
 
 def remove_punctuation(word):
     """
@@ -98,7 +103,7 @@ def to_lowercase(word):
     :param word: The word to convert.
     :return: The word in lowercase.
     """
-     def to_lowercase_recursive(word, index=0):
+    def to_lowercase_recursive(word, index=0):
         # Base case
         if index == len(word):
             return ''
@@ -128,38 +133,53 @@ def set_difference(set1, set2):
     
     return difference_recursive(set1, set2)
 
-def set_union(set1, set2):
-    # Recursive function to find the union of two sets
-    # Base case: If set1 is empty, add all unique elements from set2
-    if not set1:
-        return unique_elements(set2, [])
+def set_union(set1, set2,result=[]):
+    """
+    Recursively finds the union of two sets, ensuring each element appears exactly once.
+    Assumes both sets are already preprocessed to be case-insensitive.
+    :param set1: List representing the first set.
+    :param set2: List representing the second set.
+    :param result: Accumulator for the union result.
+    :return: A sorted list representing the union of the two sets with unique elements.
+    """
+    if not set1 and not set2:
+        # Base case: both sets are empty, return the deduplicated, sorted result
+        return sorted(list(set(result)))
+    elif set1:
+        # Process the first element of set1 if it's not empty
+        if set1[0] not in result:
+            result.append(set1[0])
+        return set_union(set1[1:], set2, result)
     else:
-        return [set1[0]] + set_union(set1[1:], [x for x in set2 if x != set1[0]])
+        # Process the first element of set2 if set1 is empty and set2 is not
+        if set2[0] not in result:
+            result.append(set2[0])
+        return set_union(set1, set2[1:], result)
 
-def unique_elements(set2, accumulator):
-    if not set2:
-        return accumulator
-    elif set2[0] not in accumulator:
-        return unique_elements(set2[1:], accumulator + [set2[0]])
-    else:
-        return unique_elements(set2[1:], accumulator)
+
 
 def set_intersection(set1, set2):
     # Recursive function to find the intersection of two sets
-    def intersection_recursive(s1, s2, result=[]):
-        if not s1 or not s2:
+    def intersection_recursive(s1, s2, index=0, result=None):
+        if result is None:
+            result = []
+        # Recursive exit condition
+        if index == len(s1):
             return result
-        if s1[0] in s2:
-            return intersection_recursive(s1[1:], s2, result + [s1[0]])
-        else:
-            return intersection_recursive(s1[1:], s2, result)
-    
-    return intersection_recursive(set1, set2)
 
+        item = s1[index]
+        if item in s2 and item not in result:
+            # Condition ensures only first-time noticed intersections are added
+            result.append(item)
+        # Call the next level of the stack, accounting for all cases
+        return intersection_recursive(s1, s2, index + 1, result)
+    
+    # Call to a helper method to effectively recurse, providing the unicity factor
+    return intersection_recursive(set1, set2)
 # Sorting and searching
 def recursive_sort(list_to_sort):
     #recursive sorting algorithm mergesort (can do quicksort too later)
-     if len(list_to_sort) <= 1:
+    if len(list_to_sort) <= 1:
         return list_to_sort
     else:
         mid = len(list_to_sort) // 2
