@@ -43,37 +43,44 @@ def process_file_lines(file, accumulator):
 
 
 #Recursively process each word in the line, preprocess, and accumulate the results.
-def process_line(line, accumulator):
+def process_line(line, accumulator, current_word='', index=0):
     """
-    Recursively processes a single line to extract words, preprocess them, and accumulate the results.
-    This function handles spaces and punctuation effectively.
+    Recursively processes a single line to extract words and numbers, including decimals,
+    ensuring that decimal numbers are treated as single entities and not split.
     :param line: A string representing a single line from the file.
-    :param accumulator: Accumulator for collecting processed words from the line.
-    :return: List of processed words from the line.
+    :param accumulator: Accumulator for collecting processed words and numbers from the line.
+    :param current_word: The current word or number being accumulated.
+    :param index: The current index in the line being processed.
+    :return: List of processed words and numbers from the line.
     """
-     # Base case: If the line is empty, return the accumulator
-    if not line:
+    # Base case: Reached the end of the line
+    if index == len(line):
+        if current_word:  # Add any final accumulated word or number
+            accumulator.append(preprocess_word(current_word))
         return accumulator
+    
+    char = line[index]
+    next_char = line[index + 1] if index + 1 < len(line) else None
+    
+    # Check if character is part of a word/number, including decimal numbers
+    if char.isalnum() or (char == '.' and current_word.isdigit() and next_char and next_char.isdigit()):
+        return process_line(line, accumulator, current_word + char, index + 1)
+    else:
+        # If current_word is not empty, it means we've reached the end of a word/number
+        if current_word:
+            accumulator.append(preprocess_word(current_word))
+            return process_line(line, accumulator, '', index + 1)
+        # If current_word is empty and char is not part of a word/number, skip it
+        return process_line(line, accumulator, current_word, index + 1)
 
-    # Find the first word boundary (space or punctuation)
-    word, _, remainder = re.match(r"(\w*)(\W*)(.*)", line).groups()
-
-    # Preprocess the word (if not empty) and add to accumulator
-    if word:
-        processed_word = preprocess_word(word)
-        accumulator.append(processed_word)
-
-    # Recursively process the remainder of the line
-    return process_line(remainder, accumulator)
-# Recursive function to remove punctuation and convert to lowercase
 def preprocess_word(word):
     """
-    Preprocesses a word by removing punctuation and converting it to lowercase.
-    :param word: The word to preprocess.
-    :return: The preprocessed word.
+    Converts a word to lowercase. This function can be expanded to include
+    additional preprocessing steps as needed.
     """
-    word = remove_punctuation(word)
-    return to_lowercase(word)
+    return word.lower()
+
+
 
 def remove_punctuation(word):
     """
@@ -274,7 +281,7 @@ def setops():
         print(f"Error writing to result.txt: {e}")
         return
 
-    if not sorted_result:
+    if not sorted_result:  #check this 
         print("empty set")
     else:
         print(f"Operation {operation} completed. Results saved to result.txt.")
