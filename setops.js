@@ -109,5 +109,5 @@ setOps(file1, file2, operation);
 
 
 /*  This is the command line argument syntax to run the code
-node script.js a.txt b.txt union
+node setops.js Data/a.txt Data/b.txt union
 */

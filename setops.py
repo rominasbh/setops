@@ -291,5 +291,5 @@ if __name__ == "__main__":
 
 '''
 input param passed as command-line arguemnts in this format : 
-python3 setops.py "set1=a.txt;set2=b.txt;operation=difference"
+python3 setops.py "set1=Data/a.txt;set2=Data/b.txt;operation=difference"
 '''
