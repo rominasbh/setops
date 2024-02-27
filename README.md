@@ -1,45 +1,34 @@
-# Set Operations Programs
-
-This repository contains two programs for performing set operations (union, intersection, and difference) on text data. The first program is written in JavaScript (Node.js) and the second in Python. Both programs read from text files, process the contents to extract words, perform the specified set operation, and save the results.
-
-## JavaScript Program
 
 ### Prerequisites
-- Node.js installed on your system.
+- Python 3: Ensure you have Python 3.x installed on your system. You can verify this by running the followinf command in your terminal:
+`python3 --version`
+
 
 ### Installation
-- Clone the repository or download the JavaScript file.
+- Project root directory located at /home/cosc4315/team39/HW navigate there to run setops.js and setops.py and run.sh
+`cd /home/cosc4315/team39/HW`
+- or clone the repository:
+`git clone https://github.com/rominasbh/setops.git`
 
 ### Usage
-Run the script from the command line, passing in the names of two text files and the operation to perform:
+-Test Cases: Test cases are located in `/home/cosc4315/team39/HW/Data`. To run the program with these files, specify the file name using the `Data/` prefix followed by the file name. Here are examples for both Python and JavaScript:
+    Python Example:
+    `python3 setops.py "set1=Data/a.txt;set2=Data/b.txt;operation=difference"`
+    Javascript Example:
+    `node setops.js Data/a.txt Data/b.txt operation`
+    Where operation can be `union` or `intersection` or `difference`
 
-`node setOps.js file1.txt file2.txt operation`
+-If you're using new data located in the root directory, specify the file names without the Data/ prefix.
 
-Available operations: `union`, `intersection`, `difference`.
+- Batch Execution: To execute multiple test cases as defined in /home/cosc4315/team39/HW/run.sh, run each command line by line. Note that executing run.sh directly will sequentially execute all test cases and overwrite previous results, leaving result.txt with the output relevant to the last executed case.
 
-### File Format
-- The input files should be text files with words separated by new lines or spaces.
+-File Execution Syntax:
+    Python:
+    `python3 setops.py "set1=[filename];set2=[filename];operation=[difference   union|intersection]"`
 
-## Python Program
+    Javascript:
+   `node setops.js [filename] [filename] operation`
+    Where operation can be `union` or `intersection` or `difference`
 
-### Prerequisites
-- Python 3 installed on your system.
 
-### Installation
-- Clone the repository or download the Python file.
-
-### Usage
-Run the script from the command line with a single argument in the format:
-
-`set1=[filename];set2=[filename];operation=[operation]"`
-
-Available operations: `difference`, `union`, `intersection`.
-
-### File Format
-- The input files should be text files with words separated by new lines or spaces.
-
-## Features
-- Both programs support three set operations: union, intersection, and difference.
-- Recursive functions are used for reading files, processing lines, and performing set operations.
-- The Python version includes additional functionality for recursive sorting and searching.
 

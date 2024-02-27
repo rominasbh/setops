@@ -13,7 +13,13 @@ def read_file(file_name):
 
     try:
         with open(file_name, 'r') as file:
+            content = file.read().strip()
+            if not content:  # Check if the file is empty or contains only whitespace
+                print(f"Warning: The file {file_name} is empty or contains only blank spaces.")
+            # If file has content, go back to the start and process it
+            file.seek(0)
             return process_file_lines(file,[])
+            
 
     except FileNotFoundError:
         print(f"Error: The file {file_name} was not found.")
@@ -89,7 +95,7 @@ def remove_punctuation(word):
     :return: The word without punctuation.
     """
     # Define the punctuation marks
-    punctuation_marks = string.punctuation  # if this is not allowed in the assignment define own string of punctuation marks
+    punctuation_marks = string.punctuation  
     
     def remove_punctuation_recursive(word, index=0):
         # Base case: if the index is beyond the last character, return an empty string
@@ -245,19 +251,18 @@ def setops():
 
     if not (set1_filename and set2_filename and operation):
         print("Invalid parameters. Please specify set1, set2, and operation.")
+        print("Usage: python setops.py \"set1=[filename];set2=[filename];operation=[difference|union|intersection]\"")
         return
 
     # Read input files and preprocess
     set1 = read_file(set1_filename)
     set2 = read_file(set2_filename)
 
-    # Ensure non-empty results before proceeding
-    if not set1 or not set2:
-        print("Error: One or both files are empty or could not be processed.")
-        return
+    
 
 
     # Perform the specified set operation
+    valid_operations = ['difference', 'union', 'intersection']
     if operation == 'difference':
         result = set_difference(set1, set2)
     elif operation == 'union':
@@ -265,7 +270,7 @@ def setops():
     elif operation == 'intersection':
         result = set_intersection(set1, set2)
     else:
-        print(f"Invalid operation: {operation}")
+        print(f"Invalid operation: {operation}. Please choose from {valid_operations}.")
         return
 
     # Sort the result

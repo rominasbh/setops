@@ -1,10 +1,38 @@
 const fs = require('fs');
 const path = require('path');
 
+
+
+// help message
+function displayHelp() {
+    console.log(`Usage: node ${path.basename(__filename)} <file1> <file2> <operation>
+    <file1> and <file2> are paths to text files.
+    <operation> can be one of the following: union, intersection, difference.
+    
+    Example:
+    node ${path.basename(__filename)} Data/a.txt Data/b.txt union`);
+}
+
+// Validate command line arguments
+if (process.argv.length !== 5) {
+    console.log("Error: Incorrect number of arguments.");
+    displayHelp();
+    //process.exit(1);
+    return[];
+}
+
 // Helper function to read file and process lines
 function readFile(fileName) {
+    if (!fs.existsSync(fileName)) {
+        console.error(`File not found: ${fileName}`);
+        return [];
+    }
     try {
         const content = fs.readFileSync(fileName, 'utf-8');
+        if (!content) {
+            console.log(`Warning: File ${fileName} is empty or contains only blank lines.`);
+            return [];
+        }
         const lines = content.split('\n');
         return processLines(lines, 0, []);
     } catch (error) {
@@ -77,7 +105,7 @@ function merge(left, right) {
     return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
 }
 
-// Main function to orchestrate the set operation
+// Main function 
 function setOps(file1, file2, operation) {
     const set1 = readFile(file1);
     const set2 = readFile(file2);
@@ -94,11 +122,18 @@ function setOps(file1, file2, operation) {
             result = setDifference(set1, set2);
             break;
         default:
-            console.log("Invalid operation");
+            console.log("Invalid operation. Please choose from 'union', 'intersection', or 'difference'.");
             return;
     }
 
+    
+
+
     fs.writeFileSync('result.txt', result.join('\n'));
+    if (result.length==0){
+        console.log("empty set")
+        return;
+    }
     console.log(`Operation ${operation} completed. Results saved to result.txt.`);
 }
 
