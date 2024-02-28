@@ -84,7 +84,9 @@ def preprocess_word(word):
     Converts a word to lowercase. This function can be expanded to include
     additional preprocessing steps as needed.
     """
-    return word.lower()
+    to_lower = lambda x: x.lower()
+    return to_lower(word)
+
 
 
 
@@ -110,24 +112,7 @@ def remove_punctuation(word):
     
     return remove_punctuation_recursive(word)
 
-def to_lowercase(word):
-    """
-    Converts a word to lowercase recursively.
-    :param word: The word to convert.
-    :return: The word in lowercase.
-    """
-    def to_lowercase_recursive(word, index=0):
-        # Base case
-        if index == len(word):
-            return ''
-        else:
-            char = word[index]
-            # Convert uppercase to lowercase
-            if 'A' <= char <= 'Z':
-                char = chr(ord(char) + 32)
-            return char + to_lowercase_recursive(word, index + 1)
-    
-    return to_lowercase_recursive(word)
+
 
 
 

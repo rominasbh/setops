@@ -50,6 +50,8 @@ function processLines(lines, index, accumulator) {
 
 // Recursively process a single line to extract words, handling decimals correctly
 function processLine(line, accumulator, currentWord = '', index = 0) {
+    const toLowerCase = str => str.toLowerCase();
+
     if (index >= line.length) {
         if (currentWord) accumulator.push(currentWord.toLowerCase());
         return accumulator;
@@ -62,7 +64,8 @@ function processLine(line, accumulator, currentWord = '', index = 0) {
     if (/\w/.test(char) || (char === '.' && /\d/.test(nextChar))) {
         return processLine(line, accumulator, currentWord + char, index + 1);
     } else {
-        if (currentWord) accumulator.push(currentWord.toLowerCase());
+        
+        if (currentWord) accumulator.push(toLowerCase(currentWord));
         return processLine(line, accumulator, '', index + 1);
     }
 }
